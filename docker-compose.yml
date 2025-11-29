@@ -1,0 +1,46 @@
+services:
+  # Database Service
+  db:
+    image: ankane/pgvector:latest # PostgreSQL with pgvector extension pre-installed
+    container_name: granthunter_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB:-granthunter}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - granthunter_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d granthunter"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Playwright Service (Browserless-style or custom)
+  # Using the official Playwright image and keeping it alive to accept commands via socket/API if needed,
+  # or simply as a runner environment. For MCP, we might execute scripts INSIDE this container.
+  # For simplicity in this MVP, we will use this container to run the 'Discovery MCP' code 
+  # that needs browser access, or use it as a remote browser.
+  # Strategy: We'll use a standard playwright image that stays running, 
+  # and the Discovery MCP will connect to it or run inside it.
+  # For better separation, let's use a 'browserless' style image which exposes a CDp endpoint.
+  playwright-service:
+    image: mcr.microsoft.com/playwright:v1.40.0-jammy
+    container_name: granthunter_browser
+    command: ["npx", "-y", "playwright", "run-server", "--port", "3000", "--host", "0.0.0.0"]
+    ports:
+      - "3000:3000" # Expose CDP port
+    networks:
+      - granthunter_net
+    init: true
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  granthunter_net:
+    driver: bridge

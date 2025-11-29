@@ -1,0 +1,3 @@
+- Hacerlo todo en una sesion de IA sale mas caro que hacerlo por partes
+- Los campos actualemnte si estan difinidos para un MVP y que cada IA tenga el contexto nesesario sin nesecidad de mandar todo el contexto anterior
+- Flata ver el ejemplo de la IA en el chat para determinar y confirmar si estamos de aceurdo con el flujo

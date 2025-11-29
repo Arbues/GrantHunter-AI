@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-dotenv
+psycopg2-binary
+pgvector
+langchain
+langchain-google-genai
+langgraph
+playwright
+streamlit
+httpx
+beautifulsoup4
+pydantic
