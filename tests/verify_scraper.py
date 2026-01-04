@@ -11,18 +11,36 @@ async def test_scraper():
     print("Testing Scraper Tool...")
     scraper = ScraperTool()
     
-    # Test with a known URL (e.g., Example.com or a simple dynamic site)
-    url = "https://example.com"
-    print(f"Scraping {url}...")
+    test_cases = [
+        {
+            "name": "Simple Static Site",
+            "url": "https://example.com",
+            "expected_keyword": "Example Domain"
+        },
+        {
+            "name": "Complex/Dynamic Site",
+            "url": "https://www.ycombinator.com/",
+            "expected_keyword": "Y Combinator"
+        }
+    ]
     
-    content = await scraper.scrape_url(url)
-    
-    if "Example Domain" in content:
-        print("✅ Scraper Test Passed: Content retrieved successfully.")
-        print(f"Content Preview: {content[:100]}...")
-    else:
-        print("❌ Scraper Test Failed: Content mismatch or empty.")
-        print(f"Content: {content}")
+    for case in test_cases:
+        print(f"\n--- Testing Case: {case['name']} ---")
+        print(f"Scraping {case['url']}...")
+        
+        content = await scraper.scrape_url(case['url'])
+        
+        if case['expected_keyword'].lower() in content.lower():
+            print(f"✅ PASSED: '{case['expected_keyword']}' found in content.")
+            print(f"Content Length: {len(content)} characters")
+            print(f"Preview: {content[:150].replace('\n', ' ')}...")
+        else:
+            print(f"❌ FAILED: '{case['expected_keyword']}' NOT found.")
+            print(f"Content length retrieved: {len(content)}")
+            if content:
+                print(f"Content Preview: {content[:200]}")
+            else:
+                print("Content is empty.")
 
 if __name__ == "__main__":
     asyncio.run(test_scraper())

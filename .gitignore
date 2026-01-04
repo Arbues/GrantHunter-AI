@@ -1,0 +1,9 @@
+# Entorno virtual
+agentes/
+
+# Credenciales y llaves API
+.env
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]

@@ -19,15 +19,15 @@
 ### Step 2: Start Infrastructure
 Run the following command to start PostgreSQL and the Playwright Service:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Step 3: Install Dependencies
 Create a virtual environment and install the requirements:
 ```bash
-python -m venv venv
+python -m venv agentes
 .\venv\Scripts\activate  # Windows
-pip install -r backend/requirements.txt
+pip3 install -r backend/requirements.txt
 ```
 
 ## 3. Running the Application

@@ -9,17 +9,32 @@ class ScraperTool:
 
     async def scrape_url(self, url: str) -> str:
         """
-        Scrapes the content of a URL using Playwright in the Docker container.
+        Scrapes the content of a URL using Playwright.
+        Tries to connect via CDP (Docker), falls back to local browser if it fails.
         Returns cleaned text content.
         """
         async with async_playwright() as p:
+            browser = None
             try:
-                # Connect to the remote browser
-                browser = await p.chromium.connect_over_cdp(self.cdp_url)
+                print(f"Attempting to connect to Playwright via WS: {self.cdp_url}")
+                try:
+                    # Try connecting to remote browser (Docker) - Use connect() for Playwright Server
+                    browser = await p.chromium.connect(self.cdp_url, timeout=5000)
+                    print("Connected to remote Playwright via WS.")
+                except Exception as cdp_error:
+                    print(f"Remote Connection failed: {cdp_error}. Falling back to local browser...")
+                    # Fallback to local browser
+                    browser = await p.chromium.launch(headless=True)
+                    print("Local browser launched.")
+
+                if not browser:
+                    raise Exception("Failed to initialize any browser (remote or local).")
+
                 context = await browser.new_context()
                 page = await context.new_page()
                 
                 # Navigate with timeout
+                print(f"Navigating to {url}...")
                 await page.goto(url, timeout=30000, wait_until="domcontentloaded")
                 
                 # Get HTML content
@@ -29,7 +44,7 @@ class ScraperTool:
                 soup = BeautifulSoup(content, "html.parser")
                 
                 # Remove scripts and styles
-                for script in soup(["script", "style"]):
+                for script in soup(["script", "style", "nav", "footer"]):
                     script.decompose()
                     
                 text = soup.get_text(separator="\n")
@@ -44,4 +59,6 @@ class ScraperTool:
                 
             except Exception as e:
                 print(f"Error scraping {url}: {e}")
+                if browser:
+                    await browser.close()
                 return ""

@@ -14,7 +14,7 @@ services:
     networks:
       - granthunter_net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d granthunter"]
+      test: [ "CMD-SHELL", "pg_isready -U admin -d granthunter" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -28,9 +28,9 @@ services:
   # and the Discovery MCP will connect to it or run inside it.
   # For better separation, let's use a 'browserless' style image which exposes a CDp endpoint.
   playwright-service:
-    image: mcr.microsoft.com/playwright:v1.40.0-jammy
+    image: mcr.microsoft.com/playwright:v1.57.0-jammy
     container_name: granthunter_browser
-    command: ["npx", "-y", "playwright", "run-server", "--port", "3000", "--host", "0.0.0.0"]
+    command: [ "npx", "-y", "playwright", "run-server", "--port", "3000", "--host", "0.0.0.0" ]
     ports:
       - "3000:3000" # Expose CDP port
     networks:
@@ -40,6 +40,7 @@ services:
 
 volumes:
   postgres_data:
+
 
 networks:
   granthunter_net:
