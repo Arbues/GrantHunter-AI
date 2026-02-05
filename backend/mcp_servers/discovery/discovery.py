@@ -1,7 +1,7 @@
 import os
 import asyncio
 from typing import List
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import CommaSeparatedListOutputParser
 from .search_tool import SearchTool
@@ -9,10 +9,10 @@ from .scraper_tool import ScraperTool
 
 class DiscoveryAgent:
     def __init__(self):
-        self.llm = ChatGoogleGenerativeAI(
-            model="gemini-flash-latest",
-            temperature=0.7,
-            google_api_key=os.getenv("GOOGLE_API_KEY")
+        self.llm = ChatGroq(
+            model="qwen/qwen3-32b",
+            temperature=0.6,
+            groq_api_key=os.getenv("GROQ_API_KEY")
         )
         self.search_tool = SearchTool()
         self.scraper_tool = ScraperTool()
@@ -28,10 +28,10 @@ class DiscoveryAgent:
         queries = await self._generate_queries(user_interests, user_query)
         print(f"Generated Queries: {queries}")
         
-        # 2. Execute Search (Parallel)
+        # 2. Execute Search (Async)
         all_urls = set()
         for q in queries:
-            urls = self.search_tool.search(q, count=3) # Keep count low for MVP
+            urls = await self.search_tool.search(q, count=3) # Keep count low for MVP
             all_urls.update(urls)
         
         unique_urls = list(all_urls)[:5] # Limit to 5 for MVP speed
@@ -61,9 +61,18 @@ class DiscoveryAgent:
             
             Generate 3 distinct, high-quality search queries to find relevant grants, scholarships, or funding opportunities.
             Focus on official sources, universities, and research organizations.
-            Return ONLY a comma-separated list of queries.
+            Return ONLY a comma-separated list of queries. 
+            Do NOT include any introduction, thinking process, or multiple lines.
             """,
             input_variables=["interests", "user_query"]
         )
-        chain = prompt | self.llm | parser
-        return chain.invoke({"interests": ", ".join(interests), "user_query": user_query})
+        chain = prompt | self.llm
+        
+        raw_response = await chain.ainvoke({"interests": ", ".join(interests), "user_query": user_query})
+        text_content = raw_response.content
+        
+        # Strip <think> tags if present
+        import re
+        text_content = re.sub(r'<think>.*?</think>', '', text_content, flags=re.DOTALL).strip()
+        
+        return parser.parse(text_content)

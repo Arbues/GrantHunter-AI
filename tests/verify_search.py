@@ -17,7 +17,7 @@ async def test_search():
     query = "grants for AI research 2024"
     print(f"Searching for: '{query}'...")
     
-    urls = searcher.search(query)
+    urls = await searcher.search(query)
     
     if urls:
         print(f"✅ PASSED: Found {len(urls)} URLs.")

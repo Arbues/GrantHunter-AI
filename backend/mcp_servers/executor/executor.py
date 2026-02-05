@@ -1,15 +1,17 @@
 import os
 from typing import List
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain.prompts import PromptTemplate
 from backend.mcp_servers.identity.models import FixedIdentityData, NarrativeChunk
+import re
 
+# el agente executor es el que se encarga de generar el texto final de la beca 
 class ExecutorAgent:
     def __init__(self):
-        self.llm = ChatGoogleGenerativeAI(
-            model="gemini-flash-latest",
+        self.llm = ChatGroq(
+            model="qwen/qwen3-32b",
             temperature=0.7,
-            google_api_key=os.getenv("GOOGLE_API_KEY")
+            groq_api_key=os.getenv("GROQ_API_KEY")
         )
 
     async def draft(self, profile: FixedIdentityData, chunks: List[NarrativeChunk], opportunity_content: str, instructions: str = "Draft a cover letter") -> str:
@@ -46,13 +48,21 @@ class ExecutorAgent:
         
         chain = prompt | self.llm
         
-        response = chain.invoke({
-            "name": profile.full_name,
-            "degree": profile.highest_degree,
-            "skills": ", ".join(profile.hard_skills),
-            "context_str": context_str,
-            "opportunity_content": opportunity_content[:15000],
-            "instructions": instructions
-        })
-        
-        return response.content
+        try:
+            raw_response = await chain.ainvoke({
+                "name": profile.full_name,
+                "degree": profile.highest_degree,
+                "skills": ", ".join(profile.hard_skills),
+                "context_str": context_str,
+                "opportunity_content": opportunity_content[:15000],
+                "instructions": instructions
+            })
+            
+            text_content = raw_response.content
+            # Strip <think> tags if present
+            text_content = re.sub(r'<think>.*?</think>', '', text_content, flags=re.DOTALL).strip()
+            return text_content
+            
+        except Exception as e:
+            print(f"Error drafting application: {e}")
+            return f"Error generation draft: {e}"

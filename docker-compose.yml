@@ -28,7 +28,7 @@ services:
   # and the Discovery MCP will connect to it or run inside it.
   # For better separation, let's use a 'browserless' style image which exposes a CDp endpoint.
   playwright-service:
-    image: mcr.microsoft.com/playwright:v1.57.0-jammy
+    image: mcr.microsoft.com/playwright:v1.58.1-jammy
     container_name: granthunter_browser
     command: [ "npx", "-y", "playwright", "run-server", "--port", "3000", "--host", "0.0.0.0" ]
     ports:

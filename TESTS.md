@@ -15,13 +15,14 @@ Nuestra estrategia de validación se basa en verificar **Flujos Complejos** en l
 
 2. **Búsqueda Real** (`verify_search.py`):
     * *Objetivo*: Confirma que `Brave Search API` devuelve resultados relevantes y vivos.
-    * *Mecánica*: Envía queries reales (ej: "grants for AI research") y verifica que la respuesta sea un JSON válido con URLs accesibles.
+    * *Mecánica*: Envía queries reales (ej: "grants for AI research").
+    * *Rate Limiting*: **IMPORTANTE**. Se valida que el sistema espere 1.5s entre peticiones para respetar el Free Tier de Brave (1 QPS).
 
 3. **Inteligencia de Agente** (`verify_discovery_agent.py`):
     * *Objetivo*: Probar que el **DiscoveryAgent** (el cerebro) sabe orquestar las herramientas.
     * *Mecánica*:
-        1. **Genera**: Usa `gemini-1.5-flash` para crear variaciones de búsqueda ("Google Dorking").
-        2. **Busca**: Ejecuta las búsquedas en paralelo.
+        1. **Genera**: Usa `Groq Qwen3-32B` para crear variaciones de búsqueda ("Smart Queries").
+        2. **Busca**: Ejecuta las búsquedas de forma asíncrona (respetando rate limits).
         3. **Lee**: Scrapea los 5 mejores resultados en paralelo.
     * *Validación*: El test pasa solo si retorna una lista de objetos con `URL` y `Contenido` extraído.
 
@@ -29,9 +30,9 @@ Nuestra estrategia de validación se basa en verificar **Flujos Complejos** en l
     * *Objetivo*: Simular el uso real de un usuario.
     * *Flujo*:
         1. El sistema lee un perfil Markdown (`dummy_profile.md`).
-        2. **Identity Core**: Extrae skills y nacionalidad.
+        2. **Identity Core**: Extrae skills y nacionalidad usando **Groq Qwen3-32B**.
         3. **Discovery**: Encuentra becas compatibles.
-        4. **Analyst**: Usa Gemini para comparar "Perfil vs. Beca" y asignar un puntaje.
+        4. **Analyst**: Usa **Groq Compound** (con control de concurrencia) para comparar "Perfil vs. Beca" y asignar un puntaje.
 
 ## 2. Evidencia de Funcionamiento (Proof of Work)
 
@@ -56,10 +57,10 @@ Navigating to https://www.nsf.gov/news/news_summ.jsp?cntn_id=132978&org=NSF...
 --- ANALYST NODE ---
 ✅ Workflow Finished.
 ✅ Identity Step Passed.
-✅ Discovery Step Passed. Found 5 opportunities.
-✅ Analyst Step Passed. Analyzed 5 matches.
+✅ Discovery Step Passed. Found 4 opportunities.
+✅ Analyst Step Passed. Analyzed 4 matches.
 ```
 
 ## 3. Conclusión Técnica
 
-El sistema ha demostrado ser **robusto y autocurativo el scraper** y **funcional end-to-end**. La arquitectura modular permite que si la API de búsqueda falla, el resto del flujo pueda seguir operando con datos cacheados o mocks en el futuro.
+El sistema ha demostrado ser **robusto y autocurativo** (scraper) y **funcional end-to-end**. La migración a **Groq** ha mejorado drásticamente la latencia de inferencia, y la implementación de rate limiters y semáforos asegura la estabilidad frente a límites de API.

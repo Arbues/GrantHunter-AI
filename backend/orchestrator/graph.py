@@ -13,7 +13,7 @@ async def identity_node(state: AgentState):
     print("--- IDENTITY NODE ---")
     file_path = state["profile_file_path"]
     try:
-        identity_output = parse_profile_file(file_path)
+        identity_output = await parse_profile_file(file_path)
         return {
             "profile_data": identity_output.fixed_data,
             "narrative_chunks": identity_output.chunks
@@ -35,6 +35,9 @@ async def discovery_node(state: AgentState):
     results = await discovery_agent.run(interests, user_query)
     return {"opportunities": results}
 
+# Limit concurrency for Analyst calls to avoid 429 errors (especially for compound models)
+analyst_semaphore = asyncio.Semaphore(1)
+
 async def analyst_node(state: AgentState):
     print("--- ANALYST NODE ---")
     profile = state.get("profile_data")
@@ -43,9 +46,14 @@ async def analyst_node(state: AgentState):
     if not profile or not opportunities:
         return {"matches": []}
     
-    matches = []
-    # Analyze in parallel
-    tasks = [analyst_agent.analyze(profile, opp["content"]) for opp in opportunities]
+    async def limited_analyze(profile, content):
+        async with analyst_semaphore:
+            # Small extra delay to be safe with TPM resets
+            await asyncio.sleep(0.5)
+            return await analyst_agent.analyze(profile, content)
+
+    # Analyze with controlled concurrency
+    tasks = [limited_analyze(profile, opp["content"]) for opp in opportunities]
     results = await asyncio.gather(*tasks)
     
     return {"matches": results}

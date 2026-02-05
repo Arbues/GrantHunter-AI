@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(override=True)
 
 from backend.orchestrator.graph import app
 from backend.mcp_servers.identity.models import FixedIdentityData

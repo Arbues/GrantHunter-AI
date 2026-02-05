@@ -1,7 +1,7 @@
 import os
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from backend.mcp_servers.identity.models import FixedIdentityData
@@ -14,10 +14,10 @@ class MatchResult(BaseModel):
 
 class AnalystAgent:
     def __init__(self):
-        self.llm = ChatGoogleGenerativeAI(
-            model="gemini-flash-latest",
-            temperature=0.2,
-            google_api_key=os.getenv("GOOGLE_API_KEY")
+        self.llm = ChatGroq(
+            model="groq/compound",
+            temperature=0.6,
+            groq_api_key=os.getenv("GROQ_API_KEY")
         )
         self.parser = PydanticOutputParser(pydantic_object=MatchResult)
 
@@ -44,12 +44,19 @@ class AnalystAgent:
             partial_variables={"format_instructions": self.parser.get_format_instructions()}
         )
         
-        chain = prompt | self.llm | self.parser
+        chain = prompt | self.llm
         
         try:
             # Convert Pydantic model to JSON string for the prompt
             profile_json = profile.json()
-            return chain.invoke({"profile_json": profile_json, "opportunity_content": opportunity_content[:15000]})
+            raw_response = await chain.ainvoke({"profile_json": profile_json, "opportunity_content": opportunity_content[:15000]})
+            text_content = raw_response.content
+            
+            # Strip <think> tags if present
+            import re
+            text_content = re.sub(r'<think>.*?</think>', '', text_content, flags=re.DOTALL).strip()
+            
+            return self.parser.parse(text_content)
         except Exception as e:
             print(f"Error analyzing opportunity: {e}")
             return MatchResult(match_score=0, reasoning="Error during analysis", missing_requirements=[], is_viable=False)

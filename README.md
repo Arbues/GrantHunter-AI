@@ -1,6 +1,6 @@
 # 🚀 GrantHunter AI
 
-> **Estado Actual:** ✅ Backend Operativo | 🏗️ Frontend en Desarrollo | 🧠 Modelos: Gemini 1.5 Flash
+> **Estado Actual:** ✅ Backend Operativo | 🏗️ Frontend en Desarrollo | 🧠 Modelos: Groq (Qwen3-32B + Compound)
 
 **GrantHunter AI** es un Agente de Financiación Personal diseñado para perfiles técnicos. A diferencia de un buscador pasivo, este agente **actúa**: busca activamente en la web, lee requisitos complejos, entiende tu perfil y te dice si vale la pena aplicar.
 
@@ -9,11 +9,12 @@
 El proyecto funciona sobre una arquitectura de **Agentes Distribuidos** orquestados por LangGraph:
 
 * **Brain (Orchestrator)**: Gestiona el flujo de trabajo (`Identity` -> `Discovery` -> `Analyst`).
-* **Identity Core**: Lee tu CV/Perfil (Markdown) y extrae tus "superpoderes" técnicos.
+* **Identity Core**: Lee tu CV/Perfil (Markdown) y extrae tus "superpoderes" técnicos usando **Groq Qwen3-32B**.
 * **Discovery Module**:
-  * Usa **Brave Search API** para encontrar oportunidades en tiempo real.
+  * Usa **Brave Search API** para encontrar oportunidades en tiempo real (con rate limiting de 1.5s).
   * Usa un **Scraper Híbrido** (Docker/Local) basado en Playwright para leer cualquier web.
-* **Analyst Module**: Usa `Google Gemini 1.5 Flash` para leer las bases de la beca y compararlas con tu perfil.
+  * Genera búsquedas inteligentes con **Groq Qwen3-32B**.
+* **Analyst Module**: Usa **Groq Compound** para leer las bases de la beca y compararlas con tu perfil (con semáforo para evitar rate limits).
 
 ## 📂 Estructura del Proyecto
 
@@ -28,7 +29,7 @@ El proyecto funciona sobre una arquitectura de **Agentes Distribuidos** orquesta
 
 * Docker & Docker Compose
 * Python 3.12+
-* Clave API de Google AI Studio (`GOOGLE_API_KEY`)
+* Clave API de Groq (`GROQ_API_KEY`) - [Obtener aquí](https://console.groq.com)
 * Clave API de Brave Search (`BRAVE_SEARCH_API_KEY`)
 
 ### 2. Configuración
@@ -36,8 +37,8 @@ El proyecto funciona sobre una arquitectura de **Agentes Distribuidos** orquesta
 Crea un archivo `.env` en la raíz:
 
 ```bash
-GOOGLE_API_KEY="tu_key"
-BRAVE_SEARCH_API_KEY="tu_key"
+GROQ_API_KEY=tu_key_de_groq
+BRAVE_SEARCH_API_KEY=tu_key_de_brave
 ```
 
 ### 3. Ejecución

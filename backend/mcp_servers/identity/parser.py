@@ -1,16 +1,17 @@
 import os
+import asyncio
 from typing import List
 import uuid
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from .models import IdentityOutput, FixedIdentityData, NarrativeChunk
 
-# Initialize Gemini
-llm = ChatGoogleGenerativeAI(
-    model="gemini-flash-latest",
+# Initialize Groq
+llm = ChatGroq(
+    model="qwen/qwen3-32b",
     temperature=0,
-    google_api_key=os.getenv("GOOGLE_API_KEY")
+    groq_api_key=os.getenv("GROQ_API_KEY")
 )
 
 parser = PydanticOutputParser(pydantic_object=IdentityOutput)
@@ -37,7 +38,7 @@ prompt = PromptTemplate(
     partial_variables={"format_instructions": parser.get_format_instructions()}
 )
 
-def parse_profile_file(file_path: str) -> IdentityOutput:
+async def parse_profile_file(file_path: str) -> IdentityOutput:
     """Reads a local file and parses it into IdentityOutput."""
     
     if not os.path.exists(file_path):
@@ -46,13 +47,20 @@ def parse_profile_file(file_path: str) -> IdentityOutput:
     with open(file_path, "r", encoding="utf-8") as f:
         raw_text = f.read()
         
-    chain = prompt | llm | parser
+    chain = prompt | llm
     
     try:
-        result = chain.invoke({"profile_text": raw_text})
+        # Using ainvoke for consistency
+        raw_response = await chain.ainvoke({"profile_text": raw_text})
+        text_content = raw_response.content
         
-        # Assign IDs to chunks if missing (though Pydantic might expect them, we can post-process)
-        # The LLM is asked to generate them, but we can ensure uniqueness here if needed.
+        # Strip <think> tags if present
+        import re
+        text_content = re.sub(r'<think>.*?</think>', '', text_content, flags=re.DOTALL).strip()
+        
+        result = parser.parse(text_content)
+        
+        # Assign IDs to chunks if missing
         for chunk in result.chunks:
             if not chunk.id:
                 chunk.id = str(uuid.uuid4())

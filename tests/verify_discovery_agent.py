@@ -7,16 +7,16 @@ from dotenv import load_dotenv
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Load env vars
-load_dotenv()
+load_dotenv(override=True)
 
 from backend.mcp_servers.discovery.discovery import DiscoveryAgent
 
 async def test_discovery_agent():
-    print("Testing Discovery Agent (Gemini + Search + Scraper)...")
+    print("Testing Discovery Agent (Groq + Search + Scraper)...")
     
     # Check for API Key
-    if not os.getenv("GOOGLE_API_KEY"):
-        print("❌ SKIPPING: GOOGLE_API_KEY not found in environment.")
+    if not os.getenv("GROQ_API_KEY"):
+        print("❌ SKIPPING: GROQ_API_KEY not found in environment.")
         return
 
     agent = DiscoveryAgent()
