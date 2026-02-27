@@ -3,13 +3,14 @@ from typing import List
 from langchain_groq import ChatGroq
 from langchain.prompts import PromptTemplate
 from backend.mcp_servers.identity.models import FixedIdentityData, NarrativeChunk
+from backend.utils.content_utils import log_token_usage
 import re
 
 # el agente executor es el que se encarga de generar el texto final de la beca 
 class ExecutorAgent:
     def __init__(self):
         self.llm = ChatGroq(
-            model="qwen/qwen3-32b",
+            model="meta-llama/llama-4-scout-17b-16e-instruct",
             temperature=0.7,
             groq_api_key=os.getenv("GROQ_API_KEY")
         )
@@ -57,9 +58,8 @@ class ExecutorAgent:
                 "opportunity_content": opportunity_content[:15000],
                 "instructions": instructions
             })
-            
+            log_token_usage("Executor", raw_response)
             text_content = raw_response.content
-            # Strip <think> tags if present
             text_content = re.sub(r'<think>.*?</think>', '', text_content, flags=re.DOTALL).strip()
             return text_content
             

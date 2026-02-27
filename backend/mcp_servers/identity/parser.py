@@ -1,4 +1,5 @@
 import os
+import re
 import asyncio
 from typing import List
 import uuid
@@ -6,10 +7,11 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from .models import IdentityOutput, FixedIdentityData, NarrativeChunk
+from backend.utils.content_utils import log_token_usage
 
 # Initialize Groq
 llm = ChatGroq(
-    model="qwen/qwen3-32b",
+    model="meta-llama/llama-4-scout-17b-16e-instruct",
     temperature=0,
     groq_api_key=os.getenv("GROQ_API_KEY")
 )
@@ -50,14 +52,10 @@ async def parse_profile_file(file_path: str) -> IdentityOutput:
     chain = prompt | llm
     
     try:
-        # Using ainvoke for consistency
         raw_response = await chain.ainvoke({"profile_text": raw_text})
+        log_token_usage("Identity", raw_response)
         text_content = raw_response.content
-        
-        # Strip <think> tags if present
-        import re
         text_content = re.sub(r'<think>.*?</think>', '', text_content, flags=re.DOTALL).strip()
-        
         result = parser.parse(text_content)
         
         # Assign IDs to chunks if missing

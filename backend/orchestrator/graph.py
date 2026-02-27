@@ -48,8 +48,8 @@ async def analyst_node(state: AgentState):
     
     async def limited_analyze(profile, content):
         async with analyst_semaphore:
-            # Small extra delay to be safe with TPM resets
-            await asyncio.sleep(0.5)
+            # Increased delay to 2s to respect TPM limits of compound models
+            await asyncio.sleep(2.0)
             return await analyst_agent.analyze(profile, content)
 
     # Analyze with controlled concurrency

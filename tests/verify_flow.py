@@ -38,29 +38,52 @@ async def test_flow():
         
         print("✅ Workflow Finished.")
         
-        # Check Identity
+        # --- Identity Check (strict) ---
         profile = result.get("profile_data")
-        if profile and profile.full_name == "John Doe":
-            print("✅ Identity Step Passed.")
+        if (
+            profile
+            and profile.full_name
+            and profile.hard_skills
+            and profile.interests
+        ):
+            print(f"✅ Identity Passed. Name={profile.full_name}, Skills={profile.hard_skills[:3]}")
         else:
-            print(f"❌ Identity Step Failed. Profile: {profile}")
+            print(f"❌ Identity Failed. Profile parsed incorrectly: {profile}")
+            sys.exit(1)
             
-        # Check Discovery
+        # --- Discovery Check ---
         opps = result.get("opportunities")
-        if isinstance(opps, list):
-            print(f"✅ Discovery Step Passed. Found {len(opps)} opportunities.")
+        if isinstance(opps, list) and len(opps) > 0:
+            print(f"✅ Discovery Passed. Found {len(opps)} opportunities.")
         else:
-            print("❌ Discovery Step Failed.")
+            print(f"❌ Discovery Failed. Opportunities: {opps}")
+            sys.exit(1)
             
-        # Check Analyst
+        # --- Analyst Check (strict: no silent errors) ---
         matches = result.get("matches")
-        if isinstance(matches, list):
-            print(f"✅ Analyst Step Passed. Analyzed {len(matches)} matches.")
+        if not isinstance(matches, list) or len(matches) == 0:
+            print("❌ Analyst Failed. No matches returned.")
+            sys.exit(1)
+        
+        error_matches = [m for m in matches if m.reasoning == "Error during analysis"]
+        successful_matches = len(matches) - len(error_matches)
+        
+        if len(error_matches) == len(matches):
+            print(f"❌ Analyst FAILED. ALL {len(matches)} analyses errored (rate limit or model failure).")
+            sys.exit(1)
+        elif error_matches:
+            print(f"⚠️  Analyst PARTIAL. {successful_matches}/{len(matches)} succeeded, {len(error_matches)} errored.")
         else:
-            print("❌ Analyst Step Failed.")
+            print(f"✅ Analyst Passed. {successful_matches}/{len(matches)} successful analyses.")
+            
+        # Print match scores for visibility
+        for i, m in enumerate(matches):
+            status = "✅" if m.reasoning != "Error during analysis" else "❌"
+            print(f"  {status} Match #{i+1}: score={m.match_score}, viable={m.is_viable}")
             
     except Exception as e:
         print(f"❌ Workflow Failed with Error: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     asyncio.run(test_flow())

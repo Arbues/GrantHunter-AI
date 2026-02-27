@@ -6,10 +6,10 @@ class FixedIdentityData(BaseModel):
     full_name: str = Field(description="Full name of the user")
     nationality: str = Field(description="Nationality or citizenship")
     highest_degree: str = Field(description="Highest academic degree obtained")
-    years_experience: int = Field(description="Total years of professional experience")
+    years_experience: Optional[int] = Field(default=None, description="Total years of professional experience (can be null if not mentioned)")
     hard_skills: List[str] = Field(description="List of technical skills")
-    soft_skills: List[str] = Field(description="List of soft skills")
-    languages: List[str] = Field(description="List of languages spoken")
+    soft_skills: List[str] = Field(default_factory=list, description="List of soft skills (can be empty)")
+    languages: List[str] = Field(default_factory=list, description="List of languages spoken (can be empty)")
     interests: List[str] = Field(description="List of research interests or funding topics (e.g., 'AI', 'Climate Change')")
 
 class NarrativeChunk(BaseModel):

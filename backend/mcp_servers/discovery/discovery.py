@@ -1,4 +1,5 @@
 import os
+import re
 import asyncio
 from typing import List
 from langchain_groq import ChatGroq
@@ -6,11 +7,12 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import CommaSeparatedListOutputParser
 from .search_tool import SearchTool
 from .scraper_tool import ScraperTool
+from backend.utils.content_utils import log_token_usage
 
 class DiscoveryAgent:
     def __init__(self):
         self.llm = ChatGroq(
-            model="qwen/qwen3-32b",
+            model="meta-llama/llama-4-scout-17b-16e-instruct",
             temperature=0.6,
             groq_api_key=os.getenv("GROQ_API_KEY")
         )
@@ -69,10 +71,7 @@ class DiscoveryAgent:
         chain = prompt | self.llm
         
         raw_response = await chain.ainvoke({"interests": ", ".join(interests), "user_query": user_query})
+        log_token_usage("Discovery", raw_response)
         text_content = raw_response.content
-        
-        # Strip <think> tags if present
-        import re
         text_content = re.sub(r'<think>.*?</think>', '', text_content, flags=re.DOTALL).strip()
-        
         return parser.parse(text_content)
