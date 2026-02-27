@@ -56,7 +56,7 @@ stateDiagram-v2
         ScrapeContent --> [*]
     }
 
-    DiscoveryNode --> AnalystNode: 5 Best Opportunities
+    DiscoveryNode --> AnalystNode: Best Opportunities
 
     state AnalystNode {
         [*] --> SemaphoreControl
@@ -64,23 +64,35 @@ stateDiagram-v2
         AnalyzeMatch --> [*]
     }
 
-    AnalystNode --> [*]: Final Report
+    AnalystNode --> OutputNode: All Results
+    
+    state OutputNode {
+        [*] --> SaveJSON
+        SaveJSON --> GenerateMarkdown
+        GenerateMarkdown --> SessionLog
+        SessionLog --> [*]
+    }
+
+    OutputNode --> [*]: Complete
     
     note right of IdentityNode
-        Model: Qwen3-32B
-        Convierte PDF/MD a datos estructurados
+        Model: llama-4-scout
+        Parses MD profile to data
     end note
     
     note right of DiscoveryNode
-        Model: Qwen3-32B
-        Rate Limit: 1.5s entre búsquedas
-        Crea queries optimizadas + Scraping
+        Model: llama-4-scout
+        Generates 3 optimized queries
     end note
     
     note right of AnalystNode
-        Model: Groq Compound
-        Concurrency: 1 (Semaphore)
-        Evalúa match perfil vs beca
+        Model: llama-4-scout
+        Strict Scoring (Penalizes hard missing reqs)
+    end note
+
+    note right of OutputNode
+        Persists to output/{session_id}/
+        JSON + Report + Log
     end note
 ```
 
@@ -130,16 +142,23 @@ sequenceDiagram
     %% Analyst Phase
     rect rgb(240, 255, 240)
     Note over O, A: Fase de Análisis
-    O->>A: Evalúa Matches
-    loop Para cada Oportunidad (Serializado)
-        A->>LLM: Analyze(Profile, Opportunity)
-        Note right of A: Usa Semaphore(1) para evitar 429
-        LLM-->>A: MatchScore, Reasoning
-    end
-    A-->>O: List[MatchResult]
+        O->>A: Evalúa Matches
+        loop Para cada Oportunidad (Serializado)
+            A->>LLM: Analyze(Profile, Opportunity)
+            Note right of A: IA responde en ESPAÑOL
+            LLM-->>A: MatchScore, Reasoning
+        end
+        A-->>O: List[MatchResult]
     end
 
-    O->>U: Reporte Final con Resultados
+    %% Output Phase
+    rect rgb(255, 240, 245)
+        Note over O, U: Fase de Salida
+        O->>O: resolve_session_id('dev')
+        O->>O: save_results_json()
+        O->>O: generate_report_md()
+        O->>U: Final results available in output/
+    end
 ```
 
 ---
@@ -152,9 +171,12 @@ Estructura de la información que fluye entre los agentes.
 %%{init: {'theme':'base', 'themeVariables': {'primaryTextColor':'#1a1a1a','secondaryTextColor':'#1a1a1a','tertiaryTextColor':'#1a1a1a','classText':'#1a1a1a'}}}%%
 classDiagram
     class AgentState {
+        +str session_id
+        +dict run_metadata
         +str profile_file_path
         +str user_query
         +FixedIdentityData profile_data
+        +List~str~ queries
         +List~dict~ opportunities
         +List~dict~ matches
     }
@@ -203,17 +225,21 @@ graph TD
     end
 
     subgraph "Local Host"
-        App["Python App\n(Orchestrator + Agents)"]
+        App["Python Pipeline\n(LangGraph Orchestrator)"]
+        UI["Streamlit Frontend\n(app.py)"]
     end
 
+    UI -- "ainvoke()" --> App
     App -- "CDP (ws://localhost:3000)" --> Browser
     App -- "SQL (localhost:5432)" --> DB
     App -- "HTTPS" --> Groq_API[Groq API]
     App -- "HTTPS" --> Brave_API[Brave Search API]
+    App -- "Write" --> Output[("./output/session_id/")]
 
     style DB fill:#f9f,stroke:#333,stroke-width:2px
     style Browser fill:#bbf,stroke:#333,stroke-width:2px
     style App fill:#bfb,stroke:#333,stroke-width:2px
+    style UI fill:#ffa,stroke:#333,stroke-width:2px
 ```
 
 ## 🧩 6. Tabla de Tecnologías
@@ -224,8 +250,9 @@ graph TD
 | **Orquestación** | LangGraph | State management, ciclos |
 | **LLM Inference** | Groq SDK | Inferencia ultra-rápida |
 | **Modelos** | `llama-4-scout-17b-16e-instruct` | Todos los agentes (30k TPM, predecible) |
-| **Token Tracking** | `response_metadata["token_usage"]` | Nativo Groq, sin dependencias extra |
-| **Content Extraction** | `backend/utils/content_utils.py` | Prioriza párrafos con keywords de becas |
-| **Navegador** | Playwright (Docker) | Scraping de sitios dinámicos (JS) |
-| **Búsqueda** | Brave Search API | Privacidad + Índice independiente |
+| **Analyst Module** | llama-4-scout | Evalúa match perfil vs beca (Scoring Estricto, IA en Español) |
+| **Output Node** | Python Logic | Persistencia JSON, Markdown y Logs por sesión |
+| **Frontend UI** | Streamlit | Interfaz Cyber/Technical con feedback en vivo |
+| **Token Tracking** | Native Groq | Monitoreo de consumo por agente |
+| **Búsqueda** | Brave Search API | Privacidad + Índice independiente (Búsquedas en Inglés) |
 | **Base de Datos** | PostgreSQL + pgvector | (Futuro) Memoria a largo plazo |

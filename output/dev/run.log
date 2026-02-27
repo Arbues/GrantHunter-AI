@@ -1,0 +1,90 @@
+[2026-02-27T14:55:07][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T14:55:09][INFO][dev.Identity] Profile parsed. Name=John Doe
+[2026-02-27T14:55:09][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T14:55:24][INFO][dev.Discovery] Found 4 opportunities.
+[2026-02-27T14:55:24][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T14:55:39][INFO][dev.Analyst] Analysis complete: 4/4 successful.
+[2026-02-27T14:55:39][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T14:55:39][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T14:55:39][INFO][dev.Output] Report saved to output/dev/REPORT.md
+[2026-02-27T15:04:13][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T15:04:15][INFO][dev.Identity] Profile parsed. Name=John Doe
+[2026-02-27T15:04:15][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T15:04:27][INFO][dev.Discovery] Found 4 opportunities.
+[2026-02-27T15:04:27][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T15:04:43][INFO][dev.Analyst] Analysis complete: 4/4 successful.
+[2026-02-27T15:04:43][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T15:04:43][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T15:04:43][INFO][dev.Output] Report saved to output/dev/REPORT.md
+[2026-02-27T15:20:26][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T15:20:28][INFO][dev.Identity] Profile parsed. Name=John Doe
+[2026-02-27T15:20:28][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T15:20:42][INFO][dev.Discovery] Found 4 opportunities.
+[2026-02-27T15:20:42][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T15:20:58][INFO][dev.Analyst] Analysis complete: 4/4 successful.
+[2026-02-27T15:20:58][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T15:20:58][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T15:20:58][INFO][dev.Output] Report saved to output/dev/REPORT.md
+[2026-02-27T15:23:45][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T15:23:45][ERROR][dev.Identity] Identity Error: Error code: 401 - {'error': {'message': 'Invalid API Key', 'type': 'invalid_request_error', 'code': 'invalid_api_key'}}
+[2026-02-27T15:23:45][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T15:23:45][WARNING][dev.Discovery] No profile data. Skipping discovery.
+[2026-02-27T15:23:45][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T15:23:45][WARNING][dev.Analyst] Missing profile or opportunities. Skipping analysis.
+[2026-02-27T15:23:45][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T15:23:45][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T15:23:45][INFO][dev.Output] Report saved to output/dev/REPORT.md
+[2026-02-27T15:36:05][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T15:36:05][ERROR][dev.Identity] Identity Error: Error code: 401 - {'error': {'message': 'Invalid API Key', 'type': 'invalid_request_error', 'code': 'invalid_api_key'}}
+[2026-02-27T15:36:05][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T15:36:05][WARNING][dev.Discovery] No profile data. Skipping discovery.
+[2026-02-27T15:36:05][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T15:36:05][WARNING][dev.Analyst] Missing profile or opportunities. Skipping analysis.
+[2026-02-27T15:36:05][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T15:36:05][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T15:36:05][INFO][dev.Output] Report saved to output/dev/REPORT.md
+[2026-02-27T15:40:25][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T15:40:26][ERROR][dev.Identity] Identity Error: Error code: 401 - {'error': {'message': 'Invalid API Key', 'type': 'invalid_request_error', 'code': 'invalid_api_key'}}
+[2026-02-27T15:40:26][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T15:40:26][WARNING][dev.Discovery] No profile data. Skipping discovery.
+[2026-02-27T15:40:26][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T15:40:26][WARNING][dev.Analyst] Missing profile or opportunities. Skipping analysis.
+[2026-02-27T15:40:26][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T15:40:26][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T15:40:26][INFO][dev.Output] Report saved to output/dev/REPORT.md
+[2026-02-27T15:41:14][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T15:41:18][INFO][dev.Identity] Profile parsed. Name=Arbués Enrique Pérez Villegas
+[2026-02-27T15:41:18][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T15:41:32][INFO][dev.Discovery] Found 5 opportunities.
+[2026-02-27T15:41:32][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T15:41:51][INFO][dev.Analyst] Analysis complete: 5/5 successful.
+[2026-02-27T15:41:51][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T15:41:51][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T15:41:51][INFO][dev.Output] Report saved to output/dev/REPORT.md
+[2026-02-27T15:53:52][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T15:53:56][INFO][dev.Identity] Profile parsed. Name=Arbués Enrique Pérez Villegas
+[2026-02-27T15:53:56][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T15:54:09][INFO][dev.Discovery] Found 5 opportunities.
+[2026-02-27T15:54:09][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T15:54:29][INFO][dev.Analyst] Analysis complete: 5/5 successful.
+[2026-02-27T15:54:29][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T15:54:29][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T15:54:29][INFO][dev.Output] Report saved to output/dev/REPORT.md
+[2026-02-27T16:06:28][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T16:06:32][INFO][dev.Identity] Profile parsed. Name=Arbués Enrique Pérez Villegas
+[2026-02-27T16:06:32][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T16:06:51][INFO][dev.Discovery] Found 5 opportunities.
+[2026-02-27T16:06:51][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T16:07:11][INFO][dev.Analyst] Analysis complete: 5/5 successful.
+[2026-02-27T16:07:11][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T16:07:11][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T16:07:11][INFO][dev.Output] Report saved to output/dev/REPORT.md
+[2026-02-27T16:21:39][INFO][dev.Identity] --- IDENTITY NODE ---
+[2026-02-27T16:21:43][INFO][dev.Identity] Profile parsed. Name=Arbués Enrique Pérez Villegas
+[2026-02-27T16:21:43][INFO][dev.Discovery] --- DISCOVERY NODE ---
+[2026-02-27T16:21:57][INFO][dev.Discovery] Found 5 opportunities.
+[2026-02-27T16:21:57][INFO][dev.Analyst] --- ANALYST NODE ---
+[2026-02-27T16:22:16][INFO][dev.Analyst] Analysis complete: 5/5 successful.
+[2026-02-27T16:22:16][INFO][dev.Output] --- OUTPUT NODE ---
+[2026-02-27T16:22:16][INFO][dev.Output] Results saved to output/dev/results.json
+[2026-02-27T16:22:16][INFO][dev.Output] Report saved to output/dev/REPORT.md

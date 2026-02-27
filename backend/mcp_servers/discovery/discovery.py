@@ -19,15 +19,19 @@ class DiscoveryAgent:
         self.search_tool = SearchTool()
         self.scraper_tool = ScraperTool()
 
-    async def run(self, user_interests: List[str], user_query: str) -> List[dict]:
+    async def run(self, user_interests: List[str], user_query: str) -> tuple[List[dict], List[str]]:
         """
         Orchestrates the discovery process:
         1. Generate search queries based on interests and user input.
         2. Execute search.
         3. Scrape results (HTML only).
+        
+        Returns: (results, queries)
         """
         # 1. Generate Queries
-        queries = await self._generate_queries(user_interests, user_query)
+        raw_queries = await self._generate_queries(user_interests, user_query)
+        # Filter out empty or duplicate queries
+        queries = [q.strip() for q in raw_queries if q.strip()]
         print(f"Generated Queries: {queries}")
         
         # 2. Execute Search (Async)
@@ -51,7 +55,7 @@ class DiscoveryAgent:
                     "content": content[:10000] # Truncate for token limits if needed
                 })
                 
-        return results
+        return results, queries
 
     async def _generate_queries(self, interests: List[str], user_query: str) -> List[str]:
         parser = CommaSeparatedListOutputParser()

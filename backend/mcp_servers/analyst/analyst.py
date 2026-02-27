@@ -32,19 +32,24 @@ class AnalystAgent:
 
         prompt = PromptTemplate(
             template="""
-            You are a Grant Analyst. Compare the Candidate Profile with the Opportunity.
+            Eres un Analista de Becas experto. Compara el Perfil del Candidato con la Oportunidad.
+            
+            IMPORTANTE: 
+            1. Toda tu respuesta (razonamiento, requisitos faltantes) DEBE estar en ESPAÑOL.
+            2. Sé extremadamente ESTRICTO con el puntaje (0-100). 
+            3. Si la beca requiere una nacionalidad específica que el usuario NO tiene, o un grado académico que el usuario NO posee, el puntaje DEBE ser menor a 20. No seas "amable" con el puntaje si hay bloqueos insalvables.
 
-            CANDIDATE PROFILE:
+            PERFIL DEL CANDIDATO:
             {profile_json}
 
-            OPPORTUNITY CONTENT:
+            CONTENIDO DE LA OPORTUNIDAD:
             {opportunity_content}
 
-            Task:
-            1. Evaluate compatibility (0-100%).
-            2. Identify HARD requirements (Citizenship, Degree, etc.) and check if the user meets them.
-            3. Identify SOFT requirements (Research topic, skills).
-            4. List any MISSING requirements.
+            Tarea:
+            1. Evaluar compatibilidad (0-100%).
+            2. Identificar requisitos "HARD" (Ciudadanía, Título, Edad, etc.) y verificar si el usuario los cumple.
+            3. Identificar requisitos "SOFT" (Tema de investigación, habilidades).
+            4. Listar los requisitos FALTANTES.
 
             {format_instructions}
             """,

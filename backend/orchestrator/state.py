@@ -8,6 +8,10 @@ class Opportunity(TypedDict):
     content: str
 
 class AgentState(TypedDict):
+    # Session
+    session_id: str          # "dev" in dev/test, UUID4 in production
+    run_metadata: Dict[str, Any]  # timestamps, token counts, etc.
+
     # Input
     profile_file_path: str
     user_query: str
@@ -17,6 +21,7 @@ class AgentState(TypedDict):
     narrative_chunks: List[NarrativeChunk]
     
     # Discovery
+    queries: List[str]
     opportunities: List[Opportunity]
     
     # Analyst

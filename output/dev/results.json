@@ -1,0 +1,106 @@
+{
+  "session_id": "dev",
+  "metadata": {
+    "timestamp": "2026-02-27T21:22:16.839542+00:00",
+    "user_query": "Busca becas o pasantias para una estadia corta o larga en Europa de acuerdo con mi perfil",
+    "profile_file": "tests/active_profile_dev.md",
+    "source": "streamlit",
+    "completed_at": "2026-02-27T21:22:16.839439+00:00"
+  },
+  "profile": {
+    "full_name": "Arbués Enrique Pérez Villegas",
+    "nationality": "Perú",
+    "highest_degree": "Ciencias de la Computación (in progress)",
+    "years_experience": null,
+    "hard_skills": [
+      "Python",
+      "R",
+      "C++",
+      "Java",
+      "TensorFlow",
+      "PyTorch",
+      "Scikit-Learn",
+      "Pandas",
+      "Matplotlib",
+      "PostgreSQL",
+      "Azure",
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
+    "soft_skills": [
+      "Trabajo en Equipo",
+      "Responsabilidad",
+      "Comunicación efectiva",
+      "Carisma y habilidades interpersonales",
+      "Lógica de programación"
+    ],
+    "languages": [
+      "Español (Nativo)",
+      "Inglés (Intermedio)",
+      "Portugués (Básico-Intermedio)"
+    ],
+    "interests": [
+      "Inteligencia Artificial",
+      "análisis de datos",
+      "desarrollo de software",
+      "investigación aplicada"
+    ]
+  },
+  "opportunities_found": 5,
+  "results": [
+    {
+      "rank": 1,
+      "url": "https://www.scholarshipsads.com/category/subject/software-engineering/",
+      "match_score": 80,
+      "is_viable": true,
+      "reasoning": "El candidato tiene habilidades técnicas relevantes y estudios en Ciencias de la Computación, lo que lo hace compatible con varias becas internacionales. Sin embargo, podría mejorar su dominio del inglés y adquirir experiencia en investigación.",
+      "missing_requirements": [
+        "Experiencia previa en investigación o publicaciones",
+        "Dominio avanzado del inglés",
+        "Experiencia laboral o pasantías en su campo"
+      ]
+    },
+    {
+      "rank": 2,
+      "url": "https://digital-strategy.ec.europa.eu/en/news/new-horizon-europe-funding-boosts-european-research-ai-and-quantum-technologies",
+      "match_score": 80,
+      "is_viable": true,
+      "reasoning": "El candidato tiene habilidades técnicas relevantes y un interés claro en áreas que se alinean con la oportunidad, pero carece de experiencia previa en investigación.",
+      "missing_requirements": [
+        "Experiencia previa en investigación en AI o tecnologías cuánticas",
+        "Título completo en un campo relacionado"
+      ]
+    },
+    {
+      "rank": 3,
+      "url": "https://www.profellow.com/fellowships/ai-fellowships/",
+      "match_score": 80,
+      "is_viable": true,
+      "reasoning": "El candidato tiene habilidades técnicas relevantes y está cursando un grado en Ciencias de la Computación. Sin embargo, no se proporciona suficiente información sobre la oportunidad para determinar la compatibilidad perfecta.",
+      "missing_requirements": []
+    },
+    {
+      "rank": 4,
+      "url": "https://www.idp.com/find-a-scholarship/software-engineering/",
+      "match_score": 60,
+      "is_viable": false,
+      "reasoning": "El candidato tiene habilidades técnicas relevantes y está estudiando Ciencias de la Computación, lo que podría ser compatible con programas de Ingeniería de Software. Sin embargo, el nivel de inglés intermedio y la falta de un título universitario completo son puntos en contra.",
+      "missing_requirements": [
+        "Título universitario completo",
+        "Nivel de inglés avanzado"
+      ]
+    },
+    {
+      "rank": 5,
+      "url": "https://www.fellowship.ai/",
+      "match_score": 60,
+      "is_viable": false,
+      "reasoning": "El candidato tiene una buena base técnica y está interesado en la inteligencia artificial, pero la falta de experiencia previa es un obstáculo importante.",
+      "missing_requirements": [
+        "Experiencia previa en inteligencia artificial o machine learning",
+        "Certificaciones o logros previos en el campo de la inteligencia artificial"
+      ]
+    }
+  ]
+}

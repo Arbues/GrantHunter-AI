@@ -6,7 +6,7 @@ Este documento detalla cómo validamos que **GrantHunter AI** funcione correctam
 
 Nuestra estrategia de validación se basa en verificar **Flujos Complejos** en lugar de solo unidades aisladas.
 
-### 🔄 Los 4 Pilares de Verificación
+### 🔄 Los 5 Pilares de Verificación
 
 1. **Scraping Híbrido** (`verify_scraper.py`):
     * *Objetivo*: Asegurar que podemos leer cualquier web, sin importar si usamos Docker o ejecución local.
@@ -29,10 +29,15 @@ Nuestra estrategia de validación se basa en verificar **Flujos Complejos** en l
     * *Objetivo*: Simular el uso real de un usuario. Usa `sys.exit(1)` si cualquier fase falla realmente.
     * *Flujo*:
         1. Lee `dummy_profile.md` y extrae perfil con `llama-4-scout`.
-        2. **Identity Check (estricto)**: Valida `full_name` + `hard_skills` + `interests` — no solo que el objeto exista.
+        2. **Identity Check (estricto)**: Valida `full_name` + `hard_skills` + `interests`.
         3. **Discovery**: Encuentra oportunidades reales.
-        4. **Analyst Check (estricto)**: Distingue entre ✅ éxito real, ⚠️ parcial y ❌ fallo total. Un score=0 con `reasoning="Error during analysis"` cuenta como fallo, no como resultado válido.
-    * *Token Tracking*: Cada llamada LLM imprime `[TOKEN_USAGE][Agente] prompt=X, completion=Y, total=Z`.
+        4. **Analyst Check (estricto)**: Distingue entre ✅ éxito real, ⚠️ parcial y ❌ fallo total.
+    * *Token Tracking*: Cada llamada LLM imprime `[TOKEN_USAGE][Agente]`.
+
+5. **Salida Estructurada** (`verify_flow.py` - New!):
+    * *Objetivo*: Asegurar que la ejecución persiste los resultados para uso futuro (Frontend/Multi-usuario).
+    * *Mecánica*: Verifica la existencia y validez de `results.json`, `REPORT.md` y `run.log` en la carpeta de sesión.
+    * *Dev/Prod*: En desarrollo usa la carpeta `output/dev/` fija; en producción genera carpetas por UUID.
 
 ## 2. Evidencia de Funcionamiento (Proof of Work)
 
@@ -64,4 +69,4 @@ Found URLs: ['https://www.climatechange.ai/calls/innovation_grants_2024', ...]
 
 ## 3. Conclusión Técnica
 
-El sistema ha demostrado ser **robusto y autocurativo** (scraper) y **funcional end-to-end**. Con la unificación a `llama-4-scout` y la extracción inteligente de contenido, el consumo total de tokens bajó de ~25,000 a ~9,500 por ejecución, eliminando los errores 429. Los tests ahora son estrictos: cualquier fallo silencioso provoca `sys.exit(1)`, y se reportan warnings parciales (⚠️) vs fallos totales (❌).
+El sistema es ahora **persistente y auditable**. Además de ser robusto ante errores de API (rate limits) y eficiente en consumo de tokens (~9,500 por ejecución), cada "run" deja una huella estructurada lista para el Frontend. El uso de un `session_id` desacoplado permite que el backend sea escalable a múltiples usuarios sin rediseñar la lógica de los agentes. Los logs en archivo (`run.log`) aseguran que cualquier fallo en producción pueda ser diagnosticado sin depender de la consola.

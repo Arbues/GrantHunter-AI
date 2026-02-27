@@ -1,7 +1,7 @@
 import os
 from typing import List
 from langchain_groq import ChatGroq
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from backend.mcp_servers.identity.models import FixedIdentityData, NarrativeChunk
 from backend.utils.content_utils import log_token_usage
 import re
@@ -24,25 +24,28 @@ class ExecutorAgent:
         
         prompt = PromptTemplate(
             template="""
-            You are a Professional Grant Writer.
+            Eres un Redactor Profesional de Becas. 
+            Tu tarea es escribir un borrador de postulación (carta de motivación o similar) basado en la información del candidato.
             
-            CANDIDATE INFO:
-            Name: {name}
-            Degree: {degree}
-            Skills: {skills}
+            REGLA CRÍTICA: Escribe TODO el borrador en ESPAÑOL.
             
-            RELEVANT EXPERIENCE (Context):
+            DATOS DEL CANDIDATO:
+            Nombre: {name}
+            Grado: {degree}
+            Habilidades: {skills}
+            
+            EXPERIENCIA RELEVANTE (Contexto):
             {context_str}
             
-            OPPORTUNITY DETAILS:
+            DETALLES DE LA OPORTUNIDAD:
             {opportunity_content}
             
-            TASK:
+            INSTRUCCIONES DE TAREA:
             {instructions}
             
-            Write a compelling, professional draft tailored to the opportunity. 
-            Use the candidate's specific experience to prove they fit the requirements.
-            Do not invent facts. Use placeholders [Like This] if information is missing.
+            Escribe un borrador persuasivo, profesional y personalizado. 
+            Usa la experiencia específica del candidato para demostrar que encaja con los requisitos.
+            No inventes hechos. Usa marcadores de posición [Como Este] si falta información específica.
             """,
             input_variables=["name", "degree", "skills", "context_str", "opportunity_content", "instructions"]
         )
