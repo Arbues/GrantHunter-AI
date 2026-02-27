@@ -223,7 +223,9 @@ graph TD
 | **Lenguaje** | Python 3.12 | Core logic |
 | **Orquestación** | LangGraph | State management, ciclos |
 | **LLM Inference** | Groq SDK | Inferencia ultra-rápida |
-| **Modelos** | Qwen 2.5/3, Llama 3/4 | Razonamiento y Parsing |
+| **Modelos** | `llama-4-scout-17b-16e-instruct` | Todos los agentes (30k TPM, predecible) |
+| **Token Tracking** | `response_metadata["token_usage"]` | Nativo Groq, sin dependencias extra |
+| **Content Extraction** | `backend/utils/content_utils.py` | Prioriza párrafos con keywords de becas |
 | **Navegador** | Playwright (Docker) | Scraping de sitios dinámicos (JS) |
 | **Búsqueda** | Brave Search API | Privacidad + Índice independiente |
 | **Base de Datos** | PostgreSQL + pgvector | (Futuro) Memoria a largo plazo |
